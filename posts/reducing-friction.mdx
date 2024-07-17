@@ -9,6 +9,22 @@ But as with anything else positive, it's never a bad idea to consider the potent
 
 My personal favourite example of reducing friction generating perverse incentives comes at a fairly low level: table tests.
 We've all seen this type of test: instead of writing out the code for each test, we write a generic test function and send a series of values from an array or iterable object to it.
+
+```
+test('test validation', () => {
+    const table: [ string, number, boolean ][] = [
+        [ 'negative numbers should fail', -1, false ],
+        [ 'positive numbers should succeed', 1, true ],
+        [ 'zero should fail', 0, false ],
+        [ 'non-integers should fail', 0.5, true ],
+        [ 'maximum value should succeed', 127, true ],
+        [ 'too high value should fail, 128, false ],
+    ];
+
+    test.each(table)(_, num, ret) => expect(module.isMidiPitch(num)).toBe(ret);
+});
+```
+
 Table tests make it much easier to quickly write many tests to cover your code, right?
 Well, yes, they do... but the goal should be minimizing important cases not covered, not writing many tests. (If your goal is "write many tests", you've got bigger organizational problems to deal with.) 
 
