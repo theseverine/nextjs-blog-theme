@@ -1,16 +1,16 @@
 ---
 title: "Reducing Friction: (Mostly) Good"
-description: "Reducing friction helps us a lot, but also generates perverse incentives"
+description: "Reducing friction helps us, but also creates perverse incentives"
 date: Aug 17 2024
 ---
 
 We all love to imagine how the developer experience would be improved by reducing friction. We'd be able to get what we wanted done faster, cheaper and better, right? But as with anything else good, perhaps we should also look at some examples of situations where reducing friction has some negative side effects.
 
-My own personal favourite: table tests. They make it much easier to write lots of tests to cover every edge case within your code, right? Sure, they do... in theory. But the ease of adding new table tests also provide some perverse incentives.
+My own personal favourite example: table tests. They make it much easier to write lots of tests to cover every edge case within your code, right? Sure, they do... in theory. But the ease of adding new table tests also provide some perverse incentives.
 
 Suddenly it feels quicker to add three table tests than one non-table test; so when a workflow you need to test isn't supported by the table tests you may be tempted to use the existing table tests to hack together a sort of solution (it's quicker, and it works almost as well... and I'm not falling into the sunk cost fallacy here, right? Right?).
 
 Another one, which I've seen several times in production, is that table tests make it much easier to add new tests of nebulous value whose primary effect on your project is to very slightly increase the time it takes to run the test suite.
-These new tests make one feel good, because more validation that the software works as expected, but are these new tests really adding any value? Do you actually know why they're there, or did you just add them because it was easy to do quickly while you were already there?
+These new tests make one feel good, because more validation that the software works as expected, but are these new tests really adding any value? Do you actually know _why_ they're there, or did you just add them because it was easy to do quickly while you were already there?
 
 This doesn't make table tests bad (I certainly use them often), but be aware of the perverse incentives they apply to you and your team, and to their interactions with how you think.
