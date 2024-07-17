@@ -4,13 +4,21 @@ description: "Reducing friction helps us, but also creates perverse incentives"
 date: Aug 17 2024
 ---
 
-We all love to imagine how the developer experience would be improved by reducing friction. We'd be able to get what we wanted done faster, cheaper and better, right? But as with anything else good, perhaps we should also look at some examples of situations where reducing friction has some negative side effects.
+We all love to imagine how the developer experience would be improved by reducing friction. We'd be able to get what we wanted done faster, cheaper and better, right?
+But as with anything else positive, it's never a bad idea to consider the potential negative side effects of this positive change.
 
-My own personal favourite example: table tests. They make it much easier to write lots of tests to cover every edge case within your code, right? Sure, they do... in theory. But the ease of adding new table tests also provide some perverse incentives.
+My personal favourite example of reducing friction generating perverse incentives comes at a fairly low level: table tests.
+We've all seen this type of test: instead of writing out the code for each test, we write a generic test function and send a series of values from an array or iterable object to it.
+Table tests make it much easier to quickly write many tests to cover your code, right?
+Well, yes, they do... but the goal should be minimizing important cases not covered, not writing many tests. (If your goal is "write many tests", you've got bigger organizational problems to deal with.) 
 
-Suddenly it feels quicker to add three table tests than one non-table test; so when a workflow you need to test isn't supported by the table tests you may be tempted to use the existing table tests to hack together a sort of solution (it's quicker, and it works almost as well... and I'm not falling into the sunk cost fallacy here, right? Right?).
+A common case, and one I've seen many times in production: the code under test suddenly becomes more complex because of new requirements, but because it feels quicker to add three table tests than one non-table test, when a workflow you need to test isn't fully supported by the table tests you may be tempted to use the existing table tests to hack together a sort of solution (it's quicker, and it works almost as well... and I'm not falling into the sunk cost fallacy here, right? Right?).
 
-Another one, which I've seen several times in production, is that table tests make it much easier to add new tests of nebulous value whose primary effect on your project is to very slightly increase the time it takes to run the test suite.
-These new tests make one feel good, because more validation that the software works as expected, but are these new tests really adding any value? Do you actually know _why_ they're there, or did you just add them because it was easy to do quickly while you were already there?
+Another case, which I've also seen many times in my own code: table tests make it much easier to add new tests of nebulous value whose primary effect on your project is to slightly increase the time it takes to run the test suite.
+These new tests make one feel good, because the feel like further validation that the software works as expected, but how do we know these new tests really adding any value?
+More specifically, do we actually know _why_ they're there, or did we just add them because it was easy to do quickly while already working on this part of the code?
 
-This doesn't make table tests bad (I certainly use them often), but be aware of the perverse incentives they apply to you and your team, and to their interactions with how you think.
+(Tip: writing a brief message associated with each test in a table, explaining not _what_ is being tested but _why_ it is being tested, can help you understand whether the test should be there at all.
+(It also will make it easier for a new team member to understand what the code under test is doing, and why we're testing it as we do.)
+
+Obviously, these perverse incentives don't make table tests&mdash;and other timesaving devices&mdash;bad (I certainly use table tests often), but be aware of the perverse incentives they apply to you and your team, and to their interactions with how you think.
