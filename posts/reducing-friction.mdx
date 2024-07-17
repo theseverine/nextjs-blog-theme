@@ -26,15 +26,17 @@ test('midi.isMidiPitch()', () => {
 ```
 
 All good: table tests make it much easier to quickly write many tests to cover your code, right?
-Well, yes, they do... but the goal should be minimizing important cases not covered, not writing many tests. (If your goal is "write many tests", you've got bigger organizational problems to deal with.) 
+Well, yes, they do... but the number of tests is really a proxy for the true goal: minimizing important cases not covered.
+(If your goal is actually "write many tests", you've got bigger organizational problems to deal with that I may write about another time.) 
 
-A common example of suboptimal testing related to table tests, and something I've seen many times in the real world: the code under test suddenly becomes more complex because of new requirements, but because it feels quicker to add three table tests than one non-table test&mdash;and it's almost always more comfortable to fit new code within existing patterns&mdash;when a workflow you need to test isn't fully supported by the table tests you may be tempted to use the existing table tests to hack together a sort of solution (it's quicker to write, and it works almost as well... and I'm not falling into the sunk cost fallacy here, right? Right?).
+One situation where "cover important cases" can easily morph into "write tests" is when the code under test suddenly becomes more complex because of new requirements.
+Because it feels quicker to add three table tests than one non-table test&mdash;and it's almost always more comfortable to fit new code within existing patterns&mdash;if a workflow you need to test isn't fully covered by the table tests you might still be able to use it to hack together messy, non-optimal solution (it's quicker to write, it works almost as well, and we need to ship... and I'm not falling into the sunk cost fallacy here, right? Right?).
 
-Another example, which I've seen a number of times in my own code: table tests make it much easier to add new tests of nebulous value whose primary effect on your project is to slightly increase the time it takes to run the test suite.
-These new tests make one feel good, because they feel like further validation that the software works as expected, but how do we know if they are adding any value?
+Another situation where "write tests" can unconsciously become the goal, and one I've seen a number of times in my own code: table tests make it much easier to add new tests of nebulous value whose primary effect on your project is to slightly increase the time it takes to run the test suite.
+These new tests make one feel good, because they feel like further validation that the software works as expected, but do we know if they are adding any value?
 And do we actually know _why_ they're there, or did we just add them because it was easy to do quickly while already working on this part of the code?
 
-This issue can be partially mitigated through writing a brief message associated with each test in a table, explaining not _what_ is being tested but _why_ it is being tested.
+Tip: this issue can be partially mitigated through writing a brief message associated with each test in a table, explaining not _what_ is being tested but _why_ it is being tested.
 Writing this message can help you understand whether the test should be there at all, and will also make it easier for a new team member to understand what the code under test is doing, and why we're testing it as we do.
 
 ```
