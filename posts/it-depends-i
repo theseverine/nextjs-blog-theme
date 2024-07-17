@@ -1,0 +1,19 @@
+---
+title: "It Depends (I)"
+description: "No, really, there isn't One True Answer"
+date: Aug 17 2024
+---
+
+There has been much debate over recent years over the vexed question "is it better to use story points or not use story points?" [ADD CITATIONS], and all too much of this debate has come with an implicit assumption that there's One True Answer to this question.
+
+This post is just to remind you that there isn't, and that&mdash;as with all interesting sociotechnical questions&mdash;the correct answer to this question is a mixture of "it depends" and "you haven't defined this question clearly enough yet."
+
+Some of the factors involved in determining the answer to the debate would include:
+- Organizational structure and communication styles
+- What the organization is and where it is in its life (a startup? preparing for IPO? mature? a bank? a non-profit?)
+- Financial runway
+- Management style at the C-suite level
+- The customer base
+- Applicable legal regulations
+- The experience level (and actual experience) of the developer and management teams
+- The personal priorities of the whoever is actually asking the question
