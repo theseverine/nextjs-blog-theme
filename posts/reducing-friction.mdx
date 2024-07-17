@@ -8,7 +8,7 @@ We all love to imagine how the developer experience would be improved by reducin
 But as with anything else positive, it's never a bad idea to consider the potential negative side effects of this positive change.
 
 My personal favourite example of reducing friction generating perverse incentives comes at a fairly low level: table tests.
-We've all seen this type of test: instead of writing out the code for each test, we write a generic test function and send a series of values from an array or iterable object to it.
+We've all seen this type of test: instead of writing out the code for each test, we write a generic test function and send a series of values from an array or iterable object to it, such as in this extremely simple example below.
 
 ```
 test('midi.isMidiPitch()', () => {
@@ -25,12 +25,12 @@ test('midi.isMidiPitch()', () => {
 });
 ```
 
-Table tests make it much easier to quickly write many tests to cover your code, right?
+All good: table tests make it much easier to quickly write many tests to cover your code, right?
 Well, yes, they do... but the goal should be minimizing important cases not covered, not writing many tests. (If your goal is "write many tests", you've got bigger organizational problems to deal with.) 
 
-A common case, and one I've seen many times in production: the code under test suddenly becomes more complex because of new requirements, but because it feels quicker to add three table tests than one non-table test, when a workflow you need to test isn't fully supported by the table tests you may be tempted to use the existing table tests to hack together a sort of solution (it's quicker, and it works almost as well... and I'm not falling into the sunk cost fallacy here, right? Right?).
+A common case of suboptimal testing caused by the existence of table tests, and one I've seen many times in production: the code under test suddenly becomes more complex because of new requirements, but because it feels quicker to add three table tests than one non-table test, when a workflow you need to test isn't fully supported by the table tests you may be tempted to use the existing table tests to hack together a sort of solution (it's quicker, and it works almost as well... and I'm not falling into the sunk cost fallacy here, right? Right?).
 
-Mitigations include: thorough code review.
+Mitigations for this include: thorough code review.
 
 Another case, which I've also seen many times in my own code: table tests make it much easier to add new tests of nebulous value whose primary effect on your project is to slightly increase the time it takes to run the test suite.
 These new tests make one feel good, because they feel like further validation that the software works as expected, but how do we know if they are adding any value?
