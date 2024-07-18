@@ -7,7 +7,7 @@ date: Aug 17 2024
 We all love to imagine how the developer experience would be improved by reducing friction. We'd be able to get what we wanted done faster, cheaper and better, right?
 But as with anything else positive, it's never a bad idea to consider the potential negative side effects of this change.
 
-My personal favourite (and extremely simple) example of how reducing friction generating perverse incentives comes at a fairly low level: table tests.
+A simple and easy-to-understand example of how reducing friction can generate perverse incentives is provided by a common testing pattern: table tests.
 We've all seen this type of test: instead of writing out the code for each test, we write a generic test function and send a series of values from an array or iterable object to it, such as in this extremely simple example below:
 
 ```
@@ -26,10 +26,10 @@ test('midi.isMidiPitch()', () => {
 ```
 
 All good: table tests make it much easier to quickly write many tests to cover your code, right?
-Well, yes, they do... but the number of tests is really a proxy for the true goal: minimizing important cases not covered.
+Well, yes, they do... but of course the number of tests isn't really the goal here, as it's actually a proxy for the true goal: minimizing important cases not covered.
 (If your goal is actually "write many tests", you've got bigger organizational problems to deal with that I may write about another time.) 
 
-One situation where "cover important cases" can easily morph into "write tests" is when the code under test suddenly becomes more complex because of new requirements.
+One situation where "cover important cases" can easily morph into "write many tests" is when the method under test suddenly becomes more complex because of new requirements.
 Because it feels quicker to add three table tests than one non-table test&mdash;and it's almost always more comfortable to fit new code within existing patterns&mdash;if a workflow you need to test isn't fully covered by the table tests you might still be able to use it to hack together messy, non-optimal solution (it's quicker to write, it works almost as well, and we need to ship... and I'm not falling into the sunk cost fallacy here, right? Right?).
 
 Another situation where "write tests" can unconsciously become the goal, and one I've seen a number of times in my own code: table tests make it much easier to add new tests of nebulous value whose primary effect on your project is to slightly increase the time it takes to run the test suite.
