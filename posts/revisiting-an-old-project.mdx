@@ -1,0 +1,36 @@
+---
+title: "Revisiting an Old Project"
+description: "Or, How (Almost) Everything I Did Was Wrong"
+date: Jul 28 2024
+---
+
+## Performance
+
+Well, this thing wasn't very optimised at all. But sometimes optimisations don't come in the place you expect.
+
+The sequence member base object's constructor method worked like this. I don't remember why I used `Object.defineProperty()` to set it&mdash;and there may have been good reasons for it, but none were in the documentation or ADRs in the repository.
+```
+    constructor(val: SeqMemberArgument) {
+        Object.defineProperty(this, '_val', {
+            value: val,
+            configurable: false,
+            enumerable: true,
+            writable: false
+        });
+
+        Object.freeze(this._val);
+        Object.freeze(this);
+    }
+```
+
+But, since the tests were very complete, it was easy to rewrite in a more standard manner (correcting the constructor argument along the way) and indeed all the tests passed.
+```
+    constructor(val: T) {
+        this._val = val;
+
+        Object.freeze(this._val);
+        Object.freeze(this);
+    }
+```
+
+Something else less obvious happened too&mdash;the runtime for my performance testing script dropped by _50%_. Yes, 50%. I'd been expecting some small increase, but not this.

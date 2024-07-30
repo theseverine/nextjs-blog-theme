@@ -53,4 +53,6 @@ test('midi.isMidiPitch()', () => {
 });
 ```
 
+Here's another perverse incentive of table tests; they can encourage behaviour that makes refactoring of internal structures more difficult. For example, in table tests, you might compare the result of `ob1.operation()` to `ob2`; but in many languages this could easily end up comparing the internal structures of the two objects, something which could break during a refactoring, causing the need to rewrite the tests to get them to pass after the refactoring. (Which is, of course, anything but ideal, since refactorings go most smoothly when the tests pass both before and after the refactoring is performed.)
+
 Obviously, perverse incentives don't make table tests&mdash;and other timesaving devices&mdash;bad (I certainly use table tests often), but be aware of these incentives, and their interactions with how you and your team think, and consider some simple mitigations for them.
