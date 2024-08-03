@@ -1,0 +1,69 @@
+---
+title: "So You Want To Game Your Test Coverage?"
+description: "What could go wrong?"
+date: Aug 3 2024
+---
+So your org just put automated gates in place to improve code quality by requiring a specific level of test coverage?
+
+This may well be a very good thing, though the need for it points to organizational issues, and of course the actual effects of actions such as this are more complicated than they appear on the surface.
+
+But let's look at this in a less elevated mannner: how can we game test coverage so that we convert testing that fails these gates to testing that passes them&mdash;without changing anything about what we test. 
+
+(We could think of this as an "evil user story": as a developer, I wish to game test coverage so that I can avoid writing additional tests that will expend time I could spend writing new code.)
+
+## Small Numbers and Ratios
+
+Let's assume we've added a requirement of 90% test coverage by line for newly checked in code.
+
+The first thing to note, of course, is this not actually a requirement of 90% test coverage by line, but a requirement that is 90% or higher depending on the size of the code checkin. Why? Because you can't have code coverage for a fraction of a line, so the required number of lines requiring test coverage is actually `ceil(0.9 * num_lines)`.
+
+|Number of Lines|Allowed Uncovered|Coverage Requirement|
+|---|---|---|
+|1-9|0|100.0%|
+|10|1|90.0%|
+|19|1|94.7%|
+|20|2|90.0%|
+|29|2|93.1%|
+|39|2|92.3%|
+
+...and so on.
+
+So let's take an example: I've added nine new lines of code to a method; eight of these are easily tested but the ninth is hard to test properly. I'd be able to get away with this if only a tenth line was new.
+
+Simple solutions abound: rename a variable in the method "because this name suits the new use case as well as the existing ones." Reorder parameters in an associative operation "because this makes more logical sense given the new use case." Invert an `if` condition somewhere in the method. You name it, you can do it, and now your test coverage requirement just went down because the number of new lines of code in the checkin went up.
+
+## Abusing Generic Throwing Methods
+
+If you're using a language and framework that performs some kind of control flow through throwing exceptions, you're in luck. Say you have a method in a TypeScript module that throw an error if an argument to them is not a non-negative integer, and you're adding a new method that also does throws an error in this situation, but where this condition is hard to test.
+
+```
+myMethod() {
+    ...
+
+    if (typeof numRequested !== 'number' || !isFinite(n) || !!(n % 1) || n < 0) {
+        throw new Error('numRequested should be a non-negative integer');
+    }
+
+    ...
+}
+```
+
+No problem, let's abstract away the throwing on invalid argument into a validation and make both methods use it. After all, this is good practice: reducing code duplication and so on, right?
+
+```
+function throwIfNotNonnegInt(n: unknown, v = 'argument') {
+    if (typeof n !== 'number' || !isFinite(n) || !!(n % 1) || n < 0) {
+        throw new Error(`${v} should be a non-negative integer`);
+    }
+}
+
+myMethod() {
+    ...
+
+    throwIfNotNonnegInt(numRequested);
+
+    ...
+}
+```
+
+Now, because the new, abstracted function will be called by the previously existing method, you'll get 100% test coverage for it. And you'll get 100% test coverage for the `throwIfNonnegInt()` call in the new method. Success! We've raised test coverage to 100% without actually testing the hard-to-test edge case.
