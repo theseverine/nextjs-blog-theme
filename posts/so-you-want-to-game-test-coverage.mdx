@@ -24,7 +24,8 @@ The first thing to note, of course, is this not actually a requirement of 90% te
 |19|1|94.7%|
 |20|2|90.0%|
 |29|2|93.1%|
-|39|2|92.3%|
+|30|3|90.0%|
+|39|3|92.3%|
 
 ...and so on.
 
@@ -34,7 +35,7 @@ Simple solutions abound: rename a variable in the method "because this name suit
 
 ## Abusing Generic Throwing Methods
 
-If you're using a language and framework that performs some kind of control flow through throwing exceptions, you're in luck. Say you have a method in a TypeScript module that throw an error if an argument to them is not a non-negative integer, and you're adding a new method that also does throws an error in this situation, but where this condition is hard to test.
+If you're using a language and framework that performs some kind of control flow through throwing exceptions, you might have an easy way to game coverage in error-handling situations. Say you have a method in a TypeScript module that throws an error if an argument is not a non-negative integer, and you're adding a new method that also does throws an error when a value is not a non-negative integer&mdash;and this condition is hard to test.
 
 ```
 myMethod() {
@@ -60,7 +61,7 @@ function throwIfNotNonnegInt(n: unknown, v = 'argument') {
 myMethod() {
     ...
 
-    throwIfNotNonnegInt(numRequested);
+    throwIfNotNonnegInt(numRequested, 'numRequested');
 
     ...
 }
