@@ -5,17 +5,18 @@ date: Aug 3 2024
 ---
 So your org just put automated gates in place to improve code quality by requiring a specific level of test coverage?
 
-This may well be a very good thing, though the need for it points to organizational issues, and of course the actual effects of actions such as this are more complicated than they appear on the surface.
+First off, it's worth noting that while the perceieved need for this kind of gating points to organizational issues, and that though there's always side-effects to an action such as this, I'm certainly not going to suggest this is a bad idea&mdash;such a move will be overall negative in some organizations, and overall positive in others, because&mdash;as with any decision with complex effects&mdash;it has both positive and negative aspects to it, and something well worth asking deeper questions about.
 
-But let's look at this in a less elevated mannner: how can we game test coverage so that we convert testing that fails these gates to testing that passes them&mdash;without changing anything about what we test. 
+Today, though, I'd like to largely ignore these deeper questions, and look at the consequences of such a decision in a less elevated manner, by asking the question "how could we game test coverage so that we convert testing that fails these gates to testing that passes them&mdash;without changing the cases we actually test?"
 
 (We could think of this as an "evil user story": as a developer, I wish to game test coverage so that I can avoid writing additional tests that will expend time I could spend writing new code.)
 
+
 ## Small Numbers and Ratios
 
-Let's assume we've added a requirement of 90% test coverage by line for newly checked in code.
+Let's assume the new requirement as listed above is for 90% test coverage by line for new code in any pull request.
 
-The first thing to note, of course, is this not actually a requirement of 90% test coverage by line, but a requirement that is 90% or higher depending on the size of the code checkin. Why? Because you can't have code coverage for a fraction of a line, so the required number of lines requiring test coverage is actually `ceil(0.9 * num_lines)`.
+The first thing to note, of course, is this not actually a requirement of 90% test coverage by line, but a requirement that is 90% or higher depending on the size of the pull request. Why? Because you can't have code coverage for a fraction of a line, so the required number of lines requiring test coverage is actually the lowest integer that is not less than 90% of the number of new lines.
 
 |Number of Lines|Allowed Uncovered|Coverage Requirement|
 |---|---|---|
@@ -33,14 +34,18 @@ So let's take an example: I've added nine new lines of code to a method; eight o
 
 Simple solutions abound: rename a variable in the method "because this name suits the new use case as well as the existing ones." Reorder parameters in an associative operation "because this makes more logical sense given the new use case." Invert an `if` condition somewhere in the method. You name it, you can do it, and now your test coverage requirement just went down because the number of new lines of code in the checkin went up.
 
+There's also other solutions that are equally unhelpful to the bigger goal of better software. Start batching multiple small changes into single pull requests to ensure that there's less risk of failing the automated gate. Sure, you'll deploy less often and bugs may be more likely and harder to track down, but at least your code passed the quality test.
+
+
 ## Abusing Generic Throwing Methods
 
-If you're using a language and framework that performs some kind of control flow through throwing exceptions, you might have an easy way to game coverage in error-handling situations. Say you have a method in a TypeScript module that throws an error if an argument is not a non-negative integer, and you're adding a new method that also does throws an error when a value is not a non-negative integer&mdash;and this condition is hard to test.
+If you're using a language and framework that performs some kind of control flow through throwing exceptions, you might have an easy way to game coverage in error-handling situations. Say you have a method in a TypeScript module that throws an error if an argument is not a non-negative integer, and you're adding a new method that also does throws an error when a value is not a non-negative integer.&mdash;and this condition is hard to test directly, perhaps because the value being tested comes from an internal function that you don't have a mock for.
 
 ```
-myMethod() {
+method() {
     ...
 
+    const numRequested = otherMethod();
     if (typeof numRequested !== 'number' || !isFinite(n) || !!(n % 1) || n < 0) {
         throw new Error('numRequested should be a non-negative integer');
     }
@@ -58,9 +63,10 @@ function throwIfNotNonnegInt(n: unknown, v = 'argument') {
     }
 }
 
-myMethod() {
+method() {
     ...
 
+    const numRequested = otherMethod();
     throwIfNotNonnegInt(numRequested, 'numRequested');
 
     ...
@@ -68,6 +74,8 @@ myMethod() {
 ```
 
 Now, because the new, abstracted function will be called by the previously existing method, you'll get 100% test coverage for it. And you'll get 100% test coverage for the `throwIfNonnegInt()` call in the new method. Success! We've raised test coverage to 100% without actually testing the hard-to-test edge case.
+
+And yes, I've seen a production bug occur because this pattern hid an untested edge case. 
 
 
 ## When equality fails
@@ -95,7 +103,7 @@ describe('testing Puppy creation', () => {
     const other = new Puppy(); // a Puppy without a name
 
     test('the two puppies should not be identical', () => {
-        expect(chloe).not.toStrictEqual(puppy);
+        expect(chloe).not.toStrictEqual(other);
     });
 });
 ```
@@ -119,4 +127,11 @@ describe('testing Puppy creation', () => {
 
 So in the case where an operation might succeed&mdash;with a value&mdash;or fail, you might reasonably create a table test to verify success or failure (this is particularly common when you're using a language or framework that uses exceptions for control flow). If you test all the code paths for success or failure, you'll have full code coverage, and thus you can avoid actually testing the return value. Another success for 100% code coverage without verifying that the code actually works!
 
-And if you write the success/failure tests, then get distracted by a long meeting or a production incident that was caused by code that had 100% test coverage but didn't work, it's actually not implausible that you could have forgotten the need to test return values and moved on, seduced by the 100% code coverage metric.
+And if you write the success/failure tests, then get distracted by lunch, a long meeting or having finished that chunk of code up at the end of the day, it's actually not implausible that you could have forgotten the need to test return values and moved on, seduced by a 100% code coverage metric.
+
+Bonus points if you did something like this because you were distracted by a production incident that was caused by code that had 100% test coverage but didn't work correctly (this actually happened to me once).
+
+
+## Never forcing the test to actually fail
+
+Seriously, if you've never seen the test actually fail, how do you know it works? (Hint: you don't, it might not be testing what you think it is, and it might be exercising code without correctly testing the output or side-effects of that code.)
