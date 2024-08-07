@@ -114,3 +114,9 @@ describe('testing Puppy creation', () => {
     });
 });
 ```
+
+## Checking success or failure, but not return values
+
+So in the case where an operation might succeed&mdash;with a value&mdash;or fail, you might reasonably create a table test to verify success or failure (this is particularly common when you're using a language or framework that uses exceptions for control flow). If you test all the code paths for success or failure, you'll have full code coverage, and thus you can avoid actually testing the return value. Another success for 100% code coverage without verifying that the code actually works!
+
+And if you write the success/failure tests, then get distracted by a long meeting or a production incident that was caused by code that had 100% test coverage but didn't work, it's actually not implausible that you could have forgotten the need to test return values and moved on, seduced by the 100% code coverage metric.
