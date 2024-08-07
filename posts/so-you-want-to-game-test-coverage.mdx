@@ -68,3 +68,49 @@ myMethod() {
 ```
 
 Now, because the new, abstracted function will be called by the previously existing method, you'll get 100% test coverage for it. And you'll get 100% test coverage for the `throwIfNonnegInt()` call in the new method. Success! We've raised test coverage to 100% without actually testing the hard-to-test edge case.
+
+
+## When equality fails
+
+Sometimes equality operations from your unit testing framework don't do quite what you might assume. Let's assume we want a free Puppy (I know I do):
+
+```
+class Puppy {
+    constructor(opts) {
+        Object.defineProperty(this, 'val', {
+            value: opts,
+            enumerable: false,
+            writable: false,
+            configurable: false
+        });
+    }
+}
+```
+
+Now let's test that we're breeding our Puppies correctly:
+
+```
+describe('testing Puppy creation', () => {
+    const chloe = new Puppy({ name: 'Chloe' }); // a Puppy with a name
+    const other = new Puppy(); // a Puppy without a name
+
+    test('the two puppies should not be identical', () => {
+        expect(chloe).not.toStrictEqual(puppy);
+    });
+});
+```
+
+Because our test framework's `toStrictEqual()` method can only iterate through enumerable properties, it's actually impossible for the two `Puppy` objects not to be identical. And any comparison tests will always show equality.
+
+This might seem trivial, but I've seen this sort of comparison cause tests to pass when they should not, and lead to production bugs. So, if you're trying to generate test coverage rather than test wheter the software works, you definitely wouldn't want to compare properties instead of the objects as a whole:
+
+```
+describe('testing Puppy creation', () => {
+    const chloe = new Puppy({ name: 'Chloe' }); // a Puppy with a name
+    const other = new Puppy(); // a Puppy without a name
+
+    test('the two puppies should not have identical names', () => {
+        expect(chloe.name).not.toEqual(puppy.name);
+    });
+});
+```
