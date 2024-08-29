@@ -5,7 +5,7 @@ date: Aug 3 2024
 ---
 So your org just put automated gates in place to improve code quality by requiring a specific level of test coverage?
 
-First off, it's worth noting that while the perceieved need for this kind of gating points to organizational issues, and that though there's always side-effects to an action such as this, I'm certainly not going to suggest this is a bad idea&mdash;such a move will be overall negative in some organizations, and overall positive in others, because&mdash;as with any decision with complex effects&mdash;it has both positive and negative aspects to it, and something well worth asking deeper questions about.
+First off, it's worth noting that while the perceieved need for this kind of gating points to organizational issues, and that though there's always side-effects to an action such as this, I'm certainly not going to suggest this is a bad idea&mdash;such a move will be overall negative in some organizations, and overall positive in others, because&mdash;as with any decision with complex effects&mdash;it has both positive and negative aspects to it and is well worth asking deeper questions about.
 
 Today, though, I'd like to largely ignore these deeper questions, and look at the consequences of such a decision in a less elevated manner, by asking the question "how could we game test coverage so that we convert testing that fails these gates to testing that passes them&mdash;without changing the cases we actually test?"
 
@@ -95,7 +95,7 @@ class Puppy {
 }
 ```
 
-Now let's test that we're breeding our Puppies correctly:
+Now let's test that we're creating our Puppies correctly:
 
 ```
 describe('testing Puppy creation', () => {
@@ -118,7 +118,7 @@ describe('testing Puppy creation', () => {
     const other = new Puppy(); // a Puppy without a name
 
     test('the two puppies should not have identical names', () => {
-        expect(chloe.name).not.toEqual(puppy.name);
+        expect(chloe.name).not.toEqual(other.name);
     });
 });
 ```
@@ -129,7 +129,7 @@ So in the case where an operation might succeed&mdash;with a value&mdash;or fail
 
 And if you write the success/failure tests, then get distracted by lunch, a long meeting or having finished that chunk of code up at the end of the day, it's actually not implausible that you could have forgotten the need to test return values and moved on, seduced by a 100% code coverage metric.
 
-Bonus points if you did something like this because you were distracted by a production incident that was caused by code that had 100% test coverage but didn't work correctly (this actually happened to me once).
+Bonus points if you did something like this because you were distracted by a production incident that was caused by code that had 100% test coverage but didn't work correctly (this has happened to me).
 
 
 ## Never forcing the test to actually fail
@@ -143,4 +143,4 @@ Some lines of code might literally be impossible to test without a mock. Obvious
 
 Sure, you could spend time mocking X, and maybe you've already got that in place already. Or you could just delete the check and increase test coverage.
 
-Is deleting the check necessarily a bad thing to do? This is&mdash;of course&mdash;a case of It Depends™️. On one extreme, the implementation of X might never significantly change in the future and the only impact will be a minute increase in performance. On the other, the need for this check might be non-obvious, the code might be in an area that's very sensitive to business changes, and you might be leaving yourself a footgun within a rapidly evolving part of the codebase.
+Is deleting the check necessarily a bad thing to do? This is&mdash;of course&mdash;a case of It Depends™️. On one extreme, the implementations involved might never significantly change in the future and the only impact will be a minute increase in performance. On the other, the need for this check might be non-obvious, the code might be in an area that's very sensitive to business changes, and you might be leaving yourself a footgun within a rapidly evolving part of the codebase.
