@@ -135,3 +135,12 @@ Bonus points if you did something like this because you were distracted by a pro
 ## Never forcing the test to actually fail
 
 Seriously, if you've never seen the test actually fail, how do you know it works? (Hint: you don't, it might not be testing what you think it is, and it might be exercising code without correctly testing the output or side-effects of that code.)
+
+
+## That hard-to-test check
+
+Some lines of code might literally be impossible to test without a mock. Obvious example: you're passing an already-validated object X to a method which takes actions based on properties of X... but at leasst one of the checks involved can't possibly fail because of how X is constructed.
+
+Sure, you could spend time mocking X, and maybe you've already got that in place already. Or you could just delete the check and increase test coverage.
+
+Is deleting the check necessarily a bad thing to do? This is&mdash;of course&mdash;a case of It Depends™️. On one extreme, the implementation of X might never significantly change in the future and the only impact will be a minute increase in performance. On the other, the need for this check might be non-obvious, the code might be in an area that's very sensitive to business changes, and you might be leaving yourself a footgun within a rapidly evolving part of the codebase.
